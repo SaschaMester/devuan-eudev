@@ -203,4 +203,7 @@ get-orig-source:
 	cd $(dir $(firstword $(MAKEFILE_LIST)))../ && \
 	uscan --rename --force-download --watchfile debian/watch --destdir $(CURDIR)
 
-.PHONY: clean autoreconf build build-arch build-indep binary binary-arch binary-indep checkroot
+gensymbols:
+	dpkg-gensymbols 
+
+.PHONY: clean autoreconf build build-arch build-indep binary binary-arch binary-indep checkroot gensymbols
