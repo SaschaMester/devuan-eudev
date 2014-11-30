@@ -104,9 +104,8 @@ binary-arch: build checkroot
 		usr/lib/*.la
 	cd $D && rmdir lib/$(DEB_HOST_MULTIARCH) 
 
-	install --mode=755 extra/*.agent extra/create_static_nodes \
-		$D/lib/udev/
-	cp extra/hotplug.functions $D/lib/udev/
+	install --mode=755 extra/*.agent $D/lib/udev/
+	install --mode=644 extra/hotplug.functions $D/lib/udev/
 
 #	cd $D/lib/udev/rules.d/ && rm 61-persistent-storage-edd.rules
 	cp rules/debian/*.rules $D/lib/udev/rules.d/

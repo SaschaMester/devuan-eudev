@@ -13,7 +13,7 @@ extra_agents
 extra_initramfs
 extra_installer
 extra_modprobeconf
-extra_misc
+#extra_misc
 
 # Debian integration
 #dont-build-some-helpers
