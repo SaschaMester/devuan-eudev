@@ -49,27 +49,29 @@ endif
 ##############################################################################
 clean:
 	rm -rf .stamp-* build-* debian/*.substvars
-	rm -f aclocal.m4 autom4te.cache/* config.h.in config.h.in~ configure \
-		ltmain.sh install-sh missing depcomp config.sub config.guess \
-		gtk-doc.make m4/* $$(find . -name Makefile.in)
+#	rm -f aclocal.m4 autom4te.cache/* config.h.in config.h.in~ configure \
+#		ltmain.sh install-sh missing depcomp config.sub config.guess \
+#		gtk-doc.make m4/* $$(find . -name Makefile.in)
 	dh_clean
 
-autoreconf: .stamp-autoreconf
-.stamp-autoreconf:
-	gtkdocize
-	# improve support for out of tree builds, and it's still not enough
-	sed 's/srcdir/builddir/g' < gtk-doc.make > gtk-doc.make.tmp && \
-		mv gtk-doc.make.tmp gtk-doc.make
-	autoreconf --force --install --symlink
-	touch $@
-
-build-deb/config.status: .stamp-autoreconf
+#autoreconf: .stamp-autoreconf
+#.stamp-autoreconf:
+#	gtkdocize
+#	# improve support for out of tree builds, and it's still not enough
+#	sed 's/srcdir/builddir/g' < gtk-doc.make > gtk-doc.make.tmp && \
+#		mv gtk-doc.make.tmp gtk-doc.make
+#	autoreconf --force --install --symlink
+#	touch $@
+#
+#build-deb/config.status: .stamp-autoreconf
+build-deb/config.status:
 	[ -d build-deb ] || mkdir build-deb
 	cd build-deb/ && \
 	../configure $(CONFFLAGS_deb)
 
 build-udeb/config.status: CFLAGS += -Os -fomit-frame-pointer
-build-udeb/config.status: .stamp-autoreconf
+#build-udeb/config.status: .stamp-autoreconf
+build-udeb/config.status:
 	[ -d build-udeb ] || mkdir build-udeb
 	cd build-udeb/ && \
 	../configure $(CONFFLAGS_udeb)
@@ -162,14 +164,17 @@ endif
 		$(CURDIR)/debian/libudev-dev/usr/share/gtk-doc/html/libudev/
 	cp -a docs/gudev/html/* \
 		$(CURDIR)/debian/libgudev-1.0-dev/usr/share/gtk-doc/html/gudev/
+	# more workaround for libeudev docs
+	mkdir -p $(CURDIR)/debian/libudev0/usr/share/doc/libudev0/html/
+	cp -a docs/libudev/html/* \
+		$(CURDIR)/debian/libudev0/usr/share/doc/libudev0/html/
 
 	dh_link
-#FIXME
-#	mv $D/usr/share/doc/udev $D/usr/share/doc/libudev0
-	dh_installdocs -pudev -plibudev-dev --link-doc=libudev0
+
+	dh_installdocs -peudev -plibudev-dev --link-doc=libudev0
 	dh_installdocs -pgir1.2-gudev-1.0 -plibgudev-1.0-dev --link-doc=libgudev-1.0-0
+	rm $D/usr/share/doc/eudev
 	dh_installdocs README
-#	rm $D/usr/share/doc/libudev0/copyright
 #FIXME
 #	dh_installchangelogs ChangeLog
 	dh_installexamples
